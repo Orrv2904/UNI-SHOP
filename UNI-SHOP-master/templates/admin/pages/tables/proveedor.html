@@ -50,6 +50,7 @@
                     </tr>
                 </thead>
                 <tbody>
+					{% for ProvData in Proveedor %}
                     <tr>
 						<td>
 							<span class="custom-checkbox">
@@ -57,20 +58,20 @@
 								<label for="checkbox1"></label>
 							</span>
 						</td>
-                        <td>Omar</td>
-                        <td>Rene</td>
-						<td>Rodriguez</td>
-						<td>Vasquez</td>
-						<td>Managua</td>
-						<td>57915691</td>
-						<td>0xxxxxxxx0</td>
-						<td>Omar@messenger.com</td>
+                        <td>{{ProvData ["PrimerNombre"]}}</td>
+                        <td>{{ProvData ["SegundoNombre"]}}</td>
+						<td>{{ProvData ["PrimerApellido"]}}</td>
+						<td>{{ProvData ["SegundoApellido"]}}</td>
+						<td>{{ProvData ["Direccion"]}}</td>
+						<td>{{ProvData ["Telefono"]}}</td>
+						<td>{{ProvData ["RUC"]}}</td>
+						<td>{{ProvData ["Correo"]}}</td>
                         <td>
                             <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                             <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                         </td>
                     </tr>
-
+					{% endfor %}
                 </tbody>
             </table>
 			<div class="clearfix">
