@@ -472,44 +472,57 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Detalle compra</h4>
-                  <form class="forms-sample">
+                  <form class="forms-sample" method="POST" action="/DetalleCompra">
                     <div class="form-group">
-                      <label for="exampleInputName1">Nombre del producto</label>
-                      <input type="text" class="form-control" id="exampleInputName1" placeholder="Producto">
+                      <label for="exampleInputName1">Selecciona la Compra</label>
+                      <select name="idCompra" class="form-control" id="idCompra" placeholder="Compra">
+                        {% for DatosCompra in CargarCompra %}
+                        <option value="{{DatosCompra['idCompra']}}">{{DatosCompra["Fecha"]}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="exampleInputName1">Selecciona el Producto</label>
+                      <select name="idProducto" class="form-control" id="idProducto" placeholder="Producto">
+                        {% for DatosProducto in CargarProducto %}
+                        <option value="{{DatosProducto['idProducto']}}">{{DatosProducto["NombreProducto"]}}</option>
+                        {% endfor %}
+                      </select>
                     </div>
 
                     <div class="form-group">
                         <label for="exampleInputName1">Precio</label>
-                        <input type="number" class="form-control" id="exampleInputName1" placeholder="Precio">
+                        <input name="Precio" type="number" class="form-control" id="exampleInputName1" placeholder="Precio">
                       </div>
 
                       <div class="form-group">
                         <label for="exampleInputName1">Cantidad</label>
-                        <input type="number" class="form-control" id="exampleInputName1" placeholder="Cantidad">
+                        <input name="Cantidad" type="number" class="form-control" id="exampleInputName1" placeholder="Cantidad">
                       </div>
 
 
                     <div class="form-group">
                         <label for="exampleInputName1">Descuento</label>
-                        <input type="number" class="form-control" id="exampleInputName1" placeholder="Descuento">
+                        <input name="Descuento" type="number" class="form-control" id="exampleInputName1" placeholder="Descuento">
                       </div>
 
 
                     <div class="form-group">
                         <label for="exampleInputName1">IVA</label>
-                        <input type="number" class="form-control" id="exampleInputName1" placeholder="IVA">
+                        <input name="IVA" type="number" class="form-control" id="exampleInputName1" placeholder="IVA">
                       </div>
 
 
                     <div class="form-group">
                         <label for="exampleInputName1">Subtotal</label>
-                        <input type="number" class="form-control" id="exampleInputName1" placeholder="Subtotal">
+                        <input name="SubTotal" type="number" class="form-control" id="exampleInputName1" placeholder="Subtotal">
                       </div>
 
 
                     <div class="form-group">
                         <label for="exampleInputName1">Total</label>
-                        <input type="number" class="form-control" id="exampleInputName1" placeholder="Total">
+                        <input name="Total" type="number" class="form-control" id="exampleInputName1" placeholder="Total">
                       </div>
 
 

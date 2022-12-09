@@ -471,18 +471,25 @@
             <div class="col-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
+                  {% if get_flashed_messages() %}
+                  <header>
+                      <div class="alert alert-primary mb-0 text-center" role="alert">
+                          {{ get_flashed_messages() | join(" ") }}
+                      </div>
+                  </header>
+              {% endif %}
                   <h4 class="card-title">Registrar Marca</h4>
-                  <form class="forms-sample">
+                  <form class="forms-sample" method="POST" action="/Marcas">
                     <div class="form-group">
                       <label for="exampleInputName1">Nombre de la marca</label>
-                      <input type="text" class="form-control" id="exampleInputName1" placeholder="Name">
+                      <input name="marca" type="text" class="form-control" id="exampleInputName1" placeholder="Name">
                     </div>
 
 
-                    <a href="/Proveedores"><button class="agregar">
+                    <a href="/Marcas"><button class="agregar">
                       Guardar
                     </button></a>
-                    <a href="/Datos"><button class="agregar">
+                    <a href="/DatosMarca"><button class="agregar">
                       Cancelar
                     </button></a>
                   </form>

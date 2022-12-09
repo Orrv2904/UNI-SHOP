@@ -349,7 +349,7 @@
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Categorias</h4>
+                  <h4 class="card-title">Compras</h4>
                   <p class="card-description">
 
                   </p>
@@ -364,59 +364,26 @@
                             Fecha
                           </th>
                           <th>
-                            Producto
-                          </th>
-                          <th>
-                            Precio
-                          </th>
-                          <th>
-                            Cantidad
-                          </th>
-                          <th>
-                            Descuento
-                          </th>
-                          <th>
-                            IVA
-                          </th>
-                          <th>
-                            SubTotal
-                          </th>
-                          <th>
-                            Total
+                            Estado
                           </th>
                         </tr>
                       </thead>
                       <tbody>
+                        {% for CompData in Compra %}
                         <tr>
                           <td>
-                            Omar
+                            {{CompData ["idProveedor"]}}
                           </td>
                           <td>
-                            6/12/2022
+                            {{CompData ["Fecha"]}}
                           </td>
                           <td>
-                            Camisa
-                          </td>
-                          <td>
-                            55
-                          </td>
-                          <td>
-                            1
-                          </td>
-                          <td>
-                            0
-                          </td>
-                          <td>
-                            0.15
-                          </td>
-                          <td>
-                            46.75
-                          </td>
-                          <td>
-                            55
+                            {{CompData ["idEstado"]}}
                           </td>
 
+
                         </tr>
+                        {% endfor %}
                       </tbody>
                     </table>
                   </div>
@@ -426,7 +393,7 @@
 
     <!-- page-body-wrapper ends -->
   </div>
-  <a href="/Proveedores"><button class="agregar">
+  <a href="/Compra"><button class="agregar">
     Agregar nueva Categoria
   </button></a>
 

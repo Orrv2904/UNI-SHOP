@@ -36,7 +36,15 @@ def after_request(response):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    rows = db.execute("SELECT Productos.*, Categorias.Categoria  FROM Productos INNER JOIN Categorias ON Productos.idCategoria = Categorias.idCategoria")
+    #print(rows)
+    return render_template("index.html", rows=rows)
+
+@app.route("/ListoComprar/<string:id>")
+def ListoComprar(id):
+    return id
+
+
 
 @app.route("/admin")
 def admin():
@@ -56,62 +64,116 @@ def forms():
 @app.route("/Proveedores", methods=["POST","GET"])
 def Proveedores():
     if request.method == "POST":
-        print(request.form.get("Nombre1"))
-        print(request.form.get("Nombre2"))
-        print(request.form.get("Apellido1"))
-        print(request.form.get("Apellido2"))
+        print(request.form.get("Nombre"))
         print(request.form.get("Direccion"))
         print(request.form.get("Telefono"))
         print(request.form.get("Ruc"))
         print(request.form.get("Correo"))
-        if not request.form.get("Nombre1") or not request.form.get("Nombre2") or not request.form.get("Apellido1") or not request.form.get("Apellido2") or not request.form.get("Direccion") or not request.form.get("Telefono") or not request.form.get("Ruc") or not request.form.get("Correo"):
+        print(request.form.get("RazonSocial"))
+        if not request.form.get("Nombre") or not request.form.get("Direccion") or not request.form.get("Telefono") or not request.form.get("Ruc") or not request.form.get("Correo") or not request.form.get("RazonSocial"):
             # error = "SI"
             flash("Faltan Campos por llenar")
             return render_template("/admin/pages/forms/CrearProv.html")
-        Nombre1 = request.form.get("Nombre1")
-        Nombre2 = request.form.get("Nombre2")
-        Apellido1 = request.form.get("Apellido1")
-        Apellido2 = request.form.get("Apellido2")
+        Nombre = request.form.get("Nombre")
         Direccion = request.form.get("Direccion")
         Telefono = request.form.get("Telefono")
         Ruc = request.form.get("Ruc")
         Correo = request.form.get("Correo")
-        db.execute("INSERT INTO Proveedor (PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Direccion, Telefono, RUC, Correo) VALUES (?,?,?,?,?,?,?,?)", Nombre1, Nombre2, Apellido1, Apellido2, Direccion, Telefono, Ruc, Correo)
+        RazonSocial = request.form.get("RazonSocial")
+        db.execute("INSERT INTO Proveedores (Nombre, Direccion, Telefono, RUC, Correo, RazonSocial) VALUES (?,?,?,?,?,?)", Nombre, Direccion, Telefono, Ruc, Correo, RazonSocial)
         return redirect("/Proveedores")
     else:
         return render_template("/admin/pages/forms/CrearProv.html")
 
 @app.route("/DatosProveedor")
 def DatosProveedor():
-    Proveedor = db.execute("SELECT * FROM Proveedor")
+    Proveedor = db.execute("SELECT * FROM Proveedores")
     print(Proveedor)
     return render_template("/admin/pages/tables/basic-table.html",Proveedor=Proveedor)
 
 @app.route("/DatosMarca")
 def DatosMarca():
-    Marca = db.execute("SELECT * FROM Marca")
+    Marca = db.execute("SELECT * FROM Marcas")
     return render_template("/admin/pages/tables/Marca.html",Marca=Marca)
 
-@app.route("/Marcas")
+@app.route("/Marcas", methods=["POST","GET"])
 def Marcas():
-    return render_template("/admin/pages/forms/CrearMarca.html")
+    if request.method == "POST":
+        print(request.form.get("marca"))
+        if not request.form.get("marca"):
+            flash("Faltan Campos por llenar")
+            return render_template("/admin/pages/forms/CrearMarca.html")
+        marca = request.form.get("marca")
+        db.execute("INSERT INTO Marcas (Marca) VALUES (?)", marca)
+        return redirect("/Marcas")
+    else:
+        return render_template("/admin/pages/forms/CrearMarca.html")
 
 @app.route("/DatosCategoria")
 def DatosCategoria():
-    Categoria = db.execute("SELECT * FROM Categoria")
+    Categoria = db.execute("SELECT * FROM Categorias")
     return render_template("/admin/pages/tables/Categoria.html",Categoria=Categoria)
 
-@app.route("/Compra")
+@app.route("/Compra", methods=["POST","GET"])
 def Compra():
-    return render_template("/admin/pages/forms/Compra.html")
+    if request.method == "POST":
+        print("fecha", request.form.get("fecha"))
+        print("proveedores", request.form.get("idProveedor"))
+        print("estado", request.form.get("idEstado"))
 
-@app.route("/DetalleCompra")
+        Proveedores = request.form.get("idProveedor")
+        Fecha = request.form.get("fecha")
+        Estado = request.form.get("idEstado")
+
+        if not Fecha or not Proveedores or not Estado:
+            flash("Faltan Campos por llenar")
+            return redirect("/Compra")
+        db.execute("INSERT INTO Compras (idProveedor, Fecha, idEstado) VALUES (?,?,?)", Proveedores, Fecha, Estado)
+        return redirect("/Compra")
+    else:
+        CargarProveedor = db.execute("SELECT * FROM Proveedores")
+        CargarEstado = db.execute("SELECT * FROM Estados")
+        return render_template("/admin/pages/forms/Compra.html",CargarProveedor=CargarProveedor,CargarEstado=CargarEstado)
+
+    #return render_template("/admin/pages/forms/Compra.html")
+
+@app.route("/DetalleCompra", methods=["POST","GET"])
 def DetalleCompra():
-    return render_template("/admin/pages/forms/Detalle_Compra.html")
+    if request.method == "POST":
+        print("precio ", request.form.get("Precio"))
+        print("cantidad: ", request.form.get("Cantidad"))
+        print("descuento: ", request.form.get("Descuento"))
+        print("iva: ", request.form.get("IVA"))
+        print("subtotal: ", request.form.get("SubTotal"))
+        print("total: ", request.form.get("Total"))
+        print("producto: ", request.form.get("idProducto"))
+        print("compra: ", request.form.get("idCompra"))
+
+        Compra = int(request.form.get("idCompra"))
+        Producto = int(request.form.get("idProducto"))
+        Precio = float(request.form.get("Precio"))
+        Cantidad = int(request.form.get("Cantidad"))
+        Descuento = float(request.form.get("Descuento"))
+        IVA = float(request.form.get("IVA"))
+        SubTotal = float(request.form.get("SubTotal"))
+        Total = float(request.form.get("Total"))
+
+        if not Compra or not Producto or not Precio or not Cantidad or not Descuento or not IVA or not SubTotal or not Total:
+            # flash("Faltan Campos por llenar")
+            print("hola mundo")
+            return redirect("/DetalleCompra")
+        db.execute("INSERT INTO detCompra (idCompra, idProducto, Precio, Cantidad, Descuento, IVA, Subtotal, Total) VALUES (:Compra,:Producto,:Precio,:Cantidad,:Descuento,:IVA,:SubTotal,:Total)",
+        Compra=Compra, Producto=Producto, Precio=Precio, Cantidad=Cantidad, Descuento=Descuento, IVA=IVA, SubTotal=SubTotal, Total=Total)
+        return redirect("/DetalleCompra")
+    else:
+        CargarCompra = db.execute("SELECT * FROM Compras")
+        CargarProducto = db.execute("SELECT * FROM Productos")
+        return render_template("/admin/pages/forms/Detalle_Compra.html",CargarCompra=CargarCompra,CargarProducto=CargarProducto)
 
 @app.route("/DatosCompra")
 def DatosCompra():
-    return render_template("/admin/pages/tables/Compra.html")
+    Compra = db.execute("SELECT * FROM Compras")
+    return render_template("/admin/pages/tables/Compra.html",Compra=Compra)
 
 @app.route("/Productos", methods=["POST","GET"])
 def Productos():
@@ -133,28 +195,31 @@ def Productos():
             flash("Faltan Campos por llenar")
             return redirect("/Productos")
 
-        db.execute("INSERT INTO Producto (idMarca, idCategoria, NombreProducto, Precio, Cantidad, urlImg) VALUES (?,?,?,?,?,?)", Marca, Categoria, Producto, Precio, Cantidad, Url)
+        db.execute("INSERT INTO Productos (idMarca, idCategoria, NombreProducto, Precio, Cantidad, Imagen) VALUES (?,?,?,?,?,?)", Marca, Categoria, Producto, Precio, Cantidad, Url)
         return redirect("/Productos")
     else:
-        CargarMarca = db.execute("SELECT * FROM Marca")
-        CargarCategoria = db.execute("SELECT * FROM Categoria")
+        CargarMarca = db.execute("SELECT * FROM Marcas")
+        CargarCategoria = db.execute("SELECT * FROM Categorias")
         return render_template("/admin/pages/forms/CrearProd.html",CargarMarca=CargarMarca,CargarCategoria=CargarCategoria)
 
 @app.route("/DatosProductos")
 def DatosProductos():
-    Productos = db.execute("SELECT * FROM Producto")
+    Productos = db.execute("SELECT * FROM Productos")
     return render_template("/admin/pages/tables/Productos.html",Productos=Productos)
 
-@app.route("/Categorias")
+@app.route("/Categorias",  methods=["POST","GET"])
 def Categorias():
      if request.method == "POST":
         print(request.form.get("Catego"))
-        if not request.form.get("Catego"):
+        print(request.form.get("Descr"))
+        if not request.form.get("Catego") or not request.form.get("Descr"):
             # error = "SI"
             flash("Faltan Campos por llenar")
             return render_template("/admin/pages/forms/CrearCategoria.html")
+        Abrev = request.form.get("Abrev")
         Catego = request.form.get("Catego")
-        db.execute("INSERT INTO Categoria (Categoria) VALUES (?)", Catego)
+        Descr = request.form.get("Descr")
+        db.execute("INSERT INTO Categorias (idCategoria, Categoria, Descipcion) VALUES (?, ?, ?)", Abrev, Catego, Descr)
         return redirect("/Categorias")
      else:
         return render_template("/admin/pages/forms/CrearCategoria.html")

@@ -518,12 +518,14 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Registrar Compra</h4>
-                        <form class="forms-sample">
+                        <form class="forms-sample" method="POST" action="/Compra">
                             <div class="form-group">
                                 <label for="proveedor">Escoge al proveedor:</label>
-                                    <select name="proveedor" id="proveedor">
-                                        <option value="proveedor">Proveedor</option>
-                                    </select>
+                                <select name="idProveedor" class="form-control" id="idProveedor" placeholder="Proveedor">
+                                    {% for DatosProveedor in CargarProveedor %}
+                                    <option value="{{DatosProveedor['idProveedor']}}">{{DatosProveedor["Nombre"]}}</option>
+                                    {% endfor %}
+                                  </select>
                             </div>
 
 
@@ -531,22 +533,33 @@
                                     <span class="input-group-addon input-group-prepend border-right">
                                         <span class="icon-calendar input-group-text calendar-icon"></span>
                                     </span>
-                                    <input type="text" class="form-control">
+                                    <input name="fecha" type="text" class="form-control">
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="proveedor">Escoge el Estado:</label>
+                                    <select name="idEstado" class="form-control" id="idEstado" placeholder="Estado">
+                                        {% for DatosEstado in CargarEstado %}
+                                        <option value="{{DatosEstado['idEstado']}}">{{DatosEstado["Estado"]}}</option>
+                                        {% endfor %}
+                                      </select>
+                                </div>
+
 
 
                             <br>
 
-                            <a href="/Proveedores"><button class="agregar">
-                                    Guardar
-                                </button></a>
-                            <a href="/Datos"><button class="agregar">
-                                    Cancelar
-                                </button></a>
+                            <button type="submit" class="agregar">Guardar</button>
+              <a href="/DatosCompra"><button class="agregar">
+                  Cancelar
+                </button></a>
+                <a href="/DetalleCompra"><button class="agregar">
+                    Registrar Detalle de la Compra
+                  </button></a>
                                 <br>
-                                <a href="/DetalleCompra">
+                                <!-- <a href="/DetalleCompra">
                                         Registrar detalle de la compra
-                                </a>
+                                </a> -->
                         </form>
                     </div>
                 </div>
