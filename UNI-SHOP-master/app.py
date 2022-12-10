@@ -9,7 +9,7 @@ import datetime
 from flask import jsonify
 from flask_cors import CORS, cross_origin
 import cloudinary
-from helpers import login_required
+from helpers import login_required, login_rol
 
 # Configure application
 app = Flask(__name__)
@@ -38,15 +38,20 @@ def after_request(response):
 def index():
     rows = db.execute("SELECT Productos.*, Categorias.Categoria  FROM Productos INNER JOIN Categorias ON Productos.idCategoria = Categorias.idCategoria")
     #print(rows)
-    return render_template("index.html", rows=rows)
+    return render_template("index.html", rows=rows, session=session)
 
 @app.route("/ListoComprar/<string:id>")
 def ListoComprar(id):
-    return id
+    rows = db.execute("SELECT * FROM Productos WHERE idProducto = ?", id)
+    print(rows)
+    # return rows[0]["NombreProducto"] + (str(rows[0]["Precio"]))
+    # return jsonify(rows)
+    return render_template("/cliente/shopping-cart.html", rows=rows, valido=1)
 
 
 
 @app.route("/admin")
+@login_required
 def admin():
     return render_template("/admin/indexAdmin.html")
 
@@ -60,7 +65,7 @@ def chartjs():
 def forms():
     return render_template("/admin/pages/forms/basic_elements.html")
 
-
+@login_rol
 @app.route("/Proveedores", methods=["POST","GET"])
 def Proveedores():
     if request.method == "POST":
@@ -85,17 +90,20 @@ def Proveedores():
     else:
         return render_template("/admin/pages/forms/CrearProv.html")
 
+@login_rol
 @app.route("/DatosProveedor")
 def DatosProveedor():
     Proveedor = db.execute("SELECT * FROM Proveedores")
     print(Proveedor)
     return render_template("/admin/pages/tables/basic-table.html",Proveedor=Proveedor)
 
+@login_rol
 @app.route("/DatosMarca")
 def DatosMarca():
     Marca = db.execute("SELECT * FROM Marcas")
     return render_template("/admin/pages/tables/Marca.html",Marca=Marca)
 
+@login_rol
 @app.route("/Marcas", methods=["POST","GET"])
 def Marcas():
     if request.method == "POST":
@@ -109,11 +117,13 @@ def Marcas():
     else:
         return render_template("/admin/pages/forms/CrearMarca.html")
 
+@login_rol
 @app.route("/DatosCategoria")
 def DatosCategoria():
     Categoria = db.execute("SELECT * FROM Categorias")
     return render_template("/admin/pages/tables/Categoria.html",Categoria=Categoria)
 
+@login_rol
 @app.route("/Compra", methods=["POST","GET"])
 def Compra():
     if request.method == "POST":
@@ -136,7 +146,7 @@ def Compra():
         return render_template("/admin/pages/forms/Compra.html",CargarProveedor=CargarProveedor,CargarEstado=CargarEstado)
 
     #return render_template("/admin/pages/forms/Compra.html")
-
+@login_rol
 @app.route("/DetalleCompra", methods=["POST","GET"])
 def DetalleCompra():
     if request.method == "POST":
@@ -170,11 +180,13 @@ def DetalleCompra():
         CargarProducto = db.execute("SELECT * FROM Productos")
         return render_template("/admin/pages/forms/Detalle_Compra.html",CargarCompra=CargarCompra,CargarProducto=CargarProducto)
 
+@login_rol
 @app.route("/DatosCompra")
 def DatosCompra():
     Compra = db.execute("SELECT * FROM Compras")
     return render_template("/admin/pages/tables/Compra.html",Compra=Compra)
 
+@login_rol
 @app.route("/Productos", methods=["POST","GET"])
 def Productos():
     if request.method == "POST":
@@ -202,11 +214,13 @@ def Productos():
         CargarCategoria = db.execute("SELECT * FROM Categorias")
         return render_template("/admin/pages/forms/CrearProd.html",CargarMarca=CargarMarca,CargarCategoria=CargarCategoria)
 
+@login_rol
 @app.route("/DatosProductos")
 def DatosProductos():
     Productos = db.execute("SELECT * FROM Productos")
     return render_template("/admin/pages/tables/Productos.html",Productos=Productos)
 
+@login_rol
 @app.route("/Categorias",  methods=["POST","GET"])
 def Categorias():
      if request.method == "POST":
@@ -224,13 +238,61 @@ def Categorias():
      else:
         return render_template("/admin/pages/forms/CrearCategoria.html")
 
-@app.route("/LoginAdmin")
-def LoginAdmin():
-    return render_template("/admin/pages/samples/login.html")
+@app.route("/Login", methods=["GET", "POST"])
+def Login():
 
+    # Forget any user_id
+    #session.clear()
+    # User reached route via POST (as by submitting a form via POST)
+
+    if request.method == "POST":
+        username=request.form.get("username")
+        password=request.form.get("password")
+        # Query database for username
+        rows = db.execute("SELECT * FROM Usuarios WHERE Username = ?",username )
+
+        if not rows:
+
+            return "El usuario no existe"
+
+        if rows[0]["idRol"] == 1:
+            session["user_id"] = rows[0]["idCliente"]
+            session["Rol"] = rows[0]["idRol"]
+            print(session["Rol"])
+            return redirect("/")
+        else:
+            session["user_id"] = rows[0]["idCliente"]
+            session["Rol"] = rows[0]["idRol"]
+            return redirect("/admin")
+
+        # # Ensure username exists and password is correct
+        # if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+        #     return jsonify("invalid username and/or password", 403)
+
+        # # Remember which user has logged in
+        # #session["user_id"] = rows[0]["id"]
+
+        # # Redirect user to home page
+        # return redirect("/")
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("/cliente/login.html")
+
+@login_rol
 @app.route("/Contact")
 def Contact():
     return render_template("/admin/pages/Contact/Contact.html")
+
+@app.route("/logout")
+def logout():
+    """Log user out"""
+
+    # Forget any user_id
+    session.clear()
+
+    # Redirect user to login form
+    return redirect("/")
 
 # cliente page
 
@@ -254,13 +316,41 @@ def Check():
 def ContactUs():
     return render_template("/cliente/contact.html")
 
-@app.route("/Login")
-def Login():
-    return render_template("/cliente/login.html")
-
-@app.route("/Register")
+@app.route("/Register", methods=["POST","GET"])
 def Register():
-    return render_template("/cliente/register.html")
+    if request.method == "POST":
+
+        print(request.form.get("nombre"))
+        print(request.form.get("usuario"))
+        print(request.form.get("contraseña"))
+        print(request.form.get("confirmar"))
+
+        if not request.form.get("nombre") or not request.form.get("usuario") or not request.form.get("contraseña") or not request.form.get("contraseña") or not request.form.get("confirmar"):
+            flash("Insertar Usuario y contraseña!")
+            return render_template("/cliente/register.html")
+
+        Nombre = request.form.get("nombre")
+        Usuario = request.form.get("usuario")
+        Contraseña = request.form.get("contraseña")
+        Confirmar = request.form.get("confirmar")
+
+        if Contraseña != Confirmar:
+            flash("Las contraseñas no coiciden")
+            return redirect("/Register")
+
+        hash = generate_password_hash(Contraseña)
+
+        #inserta los datos del nuevo usuario, si no retorna que el usuario ya existe
+        try:
+          new_user = db.execute("INSERT INTO Usuarios (fullname, Username, Contraseña) VALUES (?, ?, ?)", Nombre, Usuario, hash)
+        except:
+            return apology("Username already exist")
+
+        session["user_id"] = new_user
+        return redirect("/")
+
+    else:
+        return render_template("/cliente/register.html")
 
 @app.route("/ProductDetails")
 def ProductDetails():
@@ -270,9 +360,26 @@ def ProductDetails():
 def Shop():
     return render_template("/cliente/shop.html")
 
-@app.route("/Shopping_Cart")
-def Shopping_Cart():
-    return render_template("/cliente/shopping-cart.html")
+@app.route("/BuyShopping_Cart/<int:idProducto>")
+def BuyShopping_Cart(idProducto):
+
+    db.execute("INSERT INTO Carrito (idProducto) VALUES (?)", idProducto)
+    return redirect("/Shopping_Cart")
+
+
+@app.route("/Shopping_Cart/<int:id>")
+def Shopping_Cart(id):
+    print("Holaaaaaaaaaaaaaa", id)
+    rows = db.execute("SELECT Productos.*, Categorias.*, Marcas.*  FROM Productos INNER JOIN \
+    Categorias ON Productos.idCategoria = Categorias.idCategoria INNER JOIN Marcas ON Marcas.idMarca = Productos.idMarca \
+        WHERE Productos.idProducto = :id ", id=id)
+
+    print(rows)
+    return render_template("/cliente/shopping-cart.html",rows=rows, valido=2)
+
+
+
+
 
 @app.route("/img")
 def img():

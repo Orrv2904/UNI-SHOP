@@ -39,9 +39,8 @@
                 <a href="/Login">Inciar sesión</a>
             </div>
             <div class="offcanvas__top__hover">
-                <span>Usd <i class="arrow_carrot-down"></i></span>
+                <span>C$ <i class="arrow_carrot-down"></i></span>
                 <ul>
-                    <li>USD</li>
                     <li>C$</li>
                 </ul>
             </div>
@@ -61,6 +60,9 @@
 
     <!-- Header Section Begin -->
     <header class="header">
+        {% if session['user_id'] %}
+
+        {% else %}
         <div class="header__top">
             <div class="container">
                 <div class="row">
@@ -75,9 +77,8 @@
                                 <a href="/Login">Iniciar sesión</a>
                             </div>
                             <div class="header__top__hover">
-                                <span>Usd <i class="arrow_carrot-down"></i></span>
+                                <span>C$ <i class="arrow_carrot-down"></i></span>
                                 <ul>
-                                    <li>USD</li>
                                     <li>C$</li>
                                 </ul>
                             </div>
@@ -86,27 +87,34 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+
+        {% if session['user_id'] %}
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-3">
                     <div class="header__logo">
-                        <a href="/"><img src="/static/css/cliente/img/logo01.png" alt=""></a>
+                        <a href="/"><img src="/static/css/cliente/img/logo02.png" alt=""></a>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
                     <nav class="header__menu mobile-menu">
                         <ul>
                             <li class="active"><a href="/templates/cliente/index.html">Inicio</a></li>
-                            <li><a href="/Shop">Tienda</a></li>
+                            <!-- <li><a href="/Shop">Tienda</a></li> -->
                             <li><a href="#">Apartados</a>
+
                                 <ul class="dropdown">
-                                    <li><a href="/About">Acerca de</a></li>
-                                    <li><a href="/ProductDetails">Detalle</a></li>
-                                    <li><a href="/Shopping_Cart">Carrito</a></li>
-                                    <li><a href="/Check">Check Out</a></li>
+                                    <li><a href="#">Acerca de</a></li>
+                                    <li><a href="#">Detalle</a></li>
+                                    <li><a href="#">Carrito</a></li>
+                                    <li><a href="#">Check Out</a></li>
                                 </ul>
                             </li>
-                            <li><a href="/ContactUs">Contáctanos</a></li>
+                            <li><a href="#">Contáctanos</a></li>
+                            <ul>
+                                <li><a href="/logout">Cerrar Sesion</a></li>
+                            </ul>
                         </ul>
                     </nav>
                 </div>
@@ -121,6 +129,44 @@
             </div>
             <div class="canvas__open"><i class="fa fa-bars"></i></div>
         </div>
+        {% else %}
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__logo">
+                        <a href="/"><img src="/static/css/cliente/img/logo01.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <nav class="header__menu mobile-menu">
+                        <ul>
+                            <li class="active"><a href="/templates/cliente/index.html">Inicio</a></li>
+                            <!-- <li><a href="/Shop">Tienda</a></li> -->
+                            <li><a href="#">Apartados</a>
+                                <ul class="dropdown">
+                                    <li><a href="#">Acerca de</a></li>
+                                    <li><a href="#">Detalle</a></li>
+                                    <li><a href="#">Carrito</a></li>
+                                    <li><a href="#">Check Out</a></li>
+
+                                </ul>
+                            </li>
+                            <li><a href="#">Contáctanos</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__nav__option">
+                        <a href="#" class="search-switch"><img src="/static/css/cliente/img/icon/search.png" alt=""></a>
+                        <a href="#"><img src="/static/css/cliente/img/icon/heart.png" alt=""></a>
+                        <a href="/templates/cliente/shopping-cart.html"><img src="/static/css/cliente/img/icon/cart.png" alt=""> <span>0</span></a>
+                        <div class="price">C$0.00</div>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open"><i class="fa fa-bars"></i></div>
+        </div>
+        {% endif %}
     </header>
     <!-- Header Section End -->
 
@@ -135,7 +181,7 @@
                                 <h6>Colección de verano 2023</h6>
                                 <h2>Aprovecha el 30% de descuento esta Navidad</h2>
                                 <p>¡Vesti con estilo el proximo ciclo escola!</p>
-                                <a href="/Shop" class="primary-btn">Comprar ya<span class="arrow_right"></span></a>
+                                <a href="/Login" class="primary-btn">Comprar ya<span class="arrow_right"></span></a>
                                 <!-- <div class="hero__social">
                                     <a href="#"><i class="fa fa-facebook"></i></a>
                                     <a href="#"><i class="fa fa-twitter"></i></a>
@@ -155,7 +201,7 @@
                                 <h6>Colección de verano 2023</h6>
                                 <h2>Aprovecha el 30% de descuento esta Navidad</h2>
                                 <p>¡Vesti con estilo el proximo ciclo escolar!</p>
-                                <a href="/Shop" class="primary-btn">Comprar ya<span class="arrow_right"></span></a>
+                                <a href="/Login" class="primary-btn">Comprar ya<span class="arrow_right"></span></a>
                                 <!-- <div class="hero__social">
                                     <a href="#"><i class="fa fa-facebook"></i></a>
                                     <a href="#"><i class="fa fa-twitter"></i></a>
@@ -182,7 +228,7 @@
                         </div>
                         <div class="banner__item__text">
                             <h2>Nuestras colecciones para este 2023</h2>
-                            <a href="/Shop">Comprar ya</a>
+                            <a href="/Login">Comprar ya</a>
                         </div>
                     </div>
                 </div>
@@ -193,7 +239,7 @@
                         </div>
                         <div class="banner__item__text">
                             <h2>Accesorios</h2>
-                            <a href="/Shop">Comprar ya</a>
+                            <a href="/Login">Comprar ya</a>
                         </div>
                     </div>
                 </div>
@@ -204,7 +250,7 @@
                         </div>
                         <div class="banner__item__text">
                             <h2>Lo más fresco para 2023</h2>
-                            <a href="/Shop">Comprar ya</a>
+                            <a href="/Login">Comprar ya</a>
                         </div>
                     </div>
                 </div>
@@ -241,7 +287,7 @@
                             </div>
                             <div class="product__item__text">
                                 <h6>{{i.NombreProducto}}</h6>
-                                <a href="/Shopping_Cart" class="add-cart">+ Agregar al carrito</a>
+                                <a href="{{url_for('Shopping_Cart',id=i.idProducto)}}" class="add-cart" name="CarritoItem">+ Agregar al carrito</a>
                                 <div class="rating">
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>
@@ -249,7 +295,7 @@
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>
                                 </div>
-                                <h5>${{i.Precio}}</h5>
+                                <h5>C${{i.Precio}}</h5>
                                     <div class="product__color__select">
                                         <label for="pc-1">
                                             <input type="radio" id="pc-1">
@@ -289,7 +335,10 @@
                             </div>
                             <div class="product__item__text">
                                 <h6>{{i.NombreProducto}}</h6>
-                                <a href="{{url_for('ListoComprar',id=i.idProducto)}}" class="add-cart">+ Agregar al carrito</a>
+                                <form method="POST" action="/ListoComprar">
+                                    <a href="{{url_for('Shopping_Cart',id=i.idProducto)}}" class="add-cart">+ Agregar al carrito</a>
+                                </form>
+
                                 <div class="rating">
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>
@@ -297,7 +346,7 @@
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>
                                 </div>
-                                <h5>{{i.Precio}}</h5>
+                                <h5>C${{i.Precio}}</h5>
                                 <div class="product__color__select">
                                     <label for="pc-4">
                                         <input type="radio" id="pc-4">
@@ -538,7 +587,7 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="categories__hot__deal">
-                        <img src="/static/css/cliente/img/product-sale.png" alt="">
+                        <img src="/static/css/cliente/img/banner/banner02.png" alt="">
                         <div class="hot__deal__sticker">
                             <span>Descuento desde</span>
                             <h5>$29.99</h5>
@@ -547,8 +596,8 @@
                 </div>
                 <div class="col-lg-4 offset-lg-1">
                     <div class="categories__deal__countdown">
-                        <span>Descuento semanal</span>
-                        <h2>Multi-pocket Chest Bag Black</h2>
+                        <span>Descuento de temporada</span>
+                        <h2>Bolso Multi-Pack</h2>
                         <div class="categories__deal__countdown__timer" id="countdown">
                             <div class="cd-item">
                                 <span>30</span>
@@ -658,7 +707,7 @@
                         <div class="footer__logo">
                             <a href="/"><img src="/static/css/cliente/img/logo01.png" alt=""></a>
                         </div>
-                        <p>Frase</p>
+                        <p>Casa de estudios universitarios radicada en la ciudad de Managua, Nicaragua</p>
                         <a href="/Check"><img src="/static/css/cliente/img/payment.png" alt=""></a>
                     </div>
                 </div>
@@ -667,9 +716,9 @@
                         <h6>Tienda</h6>
                         <ul>
                             <li><a href="#"></a></li>
-                            <li><a href="#">Trending Shoes</a></li>
-                            <li><a href="#">Accessories</a></li>
-                            <li><a href="#">Sale</a></li>
+                            <li><a href="#">Popular</a></li>
+                            <li><a href="#">Accesorios</a></li>
+                            <li><a href="#">Prendas</a></li>
                         </ul>
                     </div>
                 </div>
@@ -677,20 +726,20 @@
                     <div class="footer__widget">
                         <h6>Shopping</h6>
                         <ul>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Payment Methods</a></li>
-                            <li><a href="#">Delivary</a></li>
-                            <li><a href="#">Return & Exchanges</a></li>
+                            <li><a href="#">Contactanos</a></li>
+                            <li><a href="#">Pasarela de pago</a></li>
+                            <li><a href="#">Envios</a></li>
+
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
                     <div class="footer__widget">
-                        <h6>NewLetter</h6>
+                        <h6>UNI SHOP</h6>
                         <div class="footer__newslatter">
-                            <p>Be the first to know about new arrivals, look books, sales & promos!</p>
+                            <p>Promociones y más</p>
                             <form action="#">
-                                <input type="text" placeholder="Your email">
+                                <input type="text" placeholder="Correo Electrónico">
                                 <button type="submit"><span class="icon_mail_alt"></span></button>
                             </form>
                         </div>
@@ -705,7 +754,7 @@
                             <!-- <script>
                                 document.write(new Date().getFullYear());
                             </script>2022 -->
-                            All rights reserved
+                            Derechos Reservados
                             <!--| This template is made with <i class="fa fa-heart-o"
                             aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> -->
                         </p>
